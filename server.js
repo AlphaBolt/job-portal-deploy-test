@@ -16,7 +16,10 @@ app.use('/static', express.static('static'))
 const { Builder, Browser, By, Key, until } = require('selenium-webdriver')
 const chrome = require('selenium-webdriver/chrome');
 const options = new chrome.Options();
-options.addArguments('--headless')
+// options.addArguments('--headless')
+options.addArguments('--disable-gpu')
+options.addArguments("--disable-images")
+options.addArguments("--incognito")
 
 
 
@@ -62,35 +65,111 @@ app.get('/signout', function (req, res) {
 io.on('connection', socket =>{
 
   socket.on('job_search', data => {
-    console.log(data)
+    // console.log(data)
 
     // Send data back to frontend from here
     const { jobTitle, location } = data;
 
     // this is working
-    const example = async () => {
-      // let driver = await new Builder().forBrowser(Browser.CHROME).build()
-      let driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build()
-      try {
-        await driver.get('https://www.google.com/')
-        await driver.findElement(By.name('q')).sendKeys(jobTitle, Key.RETURN)
-        // await driver.wait(until.titleIs('webdriver - Google Search'), 1000)
-        // const hth = await driver.findElement(By.tagName('h3'));
-        const hth = await driver.findElement(By.css("h3"));
-        const text = await hth.getText();
-        console.log("Text: ", text);
-        socket.emit('job_results', text)
+    // const example = async () => {
+    //   let driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build()
+    //   try {
+    //     await driver.get('https://www.google.com/')
+    //     await driver.findElement(By.name('q')).sendKeys(jobTitle, Key.RETURN)
+    //     // await driver.wait(until.titleIs('webdriver - Google Search'), 1000)
+    //     const hth = await driver.findElement(By.css("h3"));
+    //     const text = await hth.getText();
+    //     console.log("Text: ", text);
+    //     socket.emit('job_results', text)
         
-      } finally {
-        await driver.quit()
-      }
-    }
+    //   } finally {
+    //     await driver.quit()
+    //   }
+    // }
     
-    example()
+    // example()
+
+    // let indeedStatus = 1
+    // let glassdoorStatus = 1
+
+    // Async function for scraping job
+    const scrapeJobs = async (website, jobSearchbarTag, locationSearchbarTag, cardTag, jobtitleTag, 
+      joblinkTag, locationTag, companyTag, descriptionTag, jobPostedTag, salaryTag) => {
+    // const scrapeJobs = async (website, jobSearchbarTag, locationSearchbarTag, cardTag) => {
+      let driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build()
+      await driver.get(website)
+
+      let locationSearchBar = await driver.findElement(By.id(locationSearchbarTag))
+      locationSearchBar.clear()
+      locationSearchBar.sendKeys(location)
+
+      let jobSearchbar = await driver.findElement(By.id(jobSearchbarTag))
+      jobSearchbar.clear()
+      await jobSearchbar.sendKeys(jobTitle, Key.RETURN)
+
+      let results = await driver.findElements(By.className(cardTag))
+
+      // As results is a HTML collections (not an array), so we need to convert it to JS array
+      Array.from(results)
+
+      if(results.length > 0){
+
+        // Looping through results
+        results.forEach(async (result) => {
+          console.log(result)
+
+          let job_title = await result.findElement(By.className(jobtitleTag)).getText()
+          let job_link = await result.findElement(By.className(joblinkTag)).getAttribute("href")
+          let job_location = await result.findElement(By.className(locationTag)).getText()
+          let company_name = await result.findElement(By.className(companyTag)).getText()
+          let description = await result.findElement(By.className(descriptionTag)).getText()
+          let job_posted = await result.findElement(By.className(jobPostedTag)).getText()
+          
+          let job_salary
+          console.log(job_title, job_link, job_location, company_name, description, job_posted)
+          
+          try{
+            job_salary = await result.findElement(By.className(salaryTag))
+            job_salary.getText()
+          }
+          catch(err){
+            job_salary = ""
+          }
+                    
+          socket.emit("job_results",
+            {
+              "name" : company_name,
+              "title" : job_title,
+              "location": job_location,
+              "link" : job_link,
+              "description": description,
+              "posted" : job_posted,
+              "salary" : job_salary
+          })
 
 
+        })
+
+      }
+      // await driver.quit()
+  
+
+
+    }
+
+
+    // Write function call for scrapeJobs
+    // 1. Indeed
+    // scrapeJobs('https://in.indeed.com/', 'text-input-what', 'text-input-where', 'job_seen_beacon')
+    scrapeJobs('https://in.indeed.com/', 'text-input-what', 'text-input-where', 'job_seen_beacon', 'jobTitle', 'jcs-JobTitle', 'css-1p0sjhy', 'css-92r8pb', 'css-9446fg', 'css-qvloho', 'salary-snippet-container')
+
+    // 2. Glassdoor
+    // scrapeJobs('https://www.glassdoor.co.in/Job/index.htm', "searchBar-jobTitle", "searchBar-location", "jobCard", 
+    // "JobCard_jobTitle___7I6y", "JobCard_jobTitle___7I6y", "JobCard_location__rCz3x", "EmployerProfile_compactEmployerName__LE242",
+    // "JobCard_jobDescriptionSnippet__yWW8q", "JobCard_listingAge__Ny_nG", "JobCard_salaryEstimate__arV5J")
 
     socket.emit('job_results', "Hello from server")
+
 
   })
 
