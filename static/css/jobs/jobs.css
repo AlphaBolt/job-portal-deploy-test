@@ -1,0 +1,219 @@
+.search-bar {
+  max-width: 800px; /* Set a maximum width for the container */
+  display: flex;
+  margin: 40px auto;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 2px rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.search-field {
+  display: flex;
+  font-size: 16px;
+  width: 100%;
+}
+
+.left {
+  border-radius: 10px 0px 0px 10px;
+}
+.right {
+  border-radius: 0px 10px 10px 0px;
+}
+
+.search-input {
+  background-color: #f5f5f5;
+  padding: 8px;
+  padding-left: 4px;
+  width: 100%;
+  border: none;
+  outline: none;
+}
+
+.search-bar button {
+  white-space: nowrap;
+  padding: 12px 16px;
+  font-size: 0.875rem;
+  border-radius: 10px;
+  background-color: #0099ff;
+  /* dark color */
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  margin: 10px; /* Add margin to the left of the button */
+}
+
+.search-bar button:hover {
+  background-color: #31acff;
+  /* light color */
+}
+
+svg{
+  margin: auto 16px;
+  height: 20px;
+  width: 20px;
+  color: #ccc; 
+}
+
+.close{
+  cursor: pointer;
+}
+
+.close:hover{
+  background-color: #a7a7a7;
+}
+
+.close-hidden{
+  opacity: 0;
+  visibility: hidden;
+}
+
+.focus{
+  border: 1px solid rgb(0, 153, 255);
+  border-bottom: 3px solid rgb(0, 153, 255);
+
+}
+
+.separator {
+  margin-top: auto;
+  margin-bottom: auto;
+  width: 5px;
+  height: 30px;
+  background-color: #ccc;
+}
+/*.......... End of search bar................. */
+
+
+body {
+  margin: 0;
+  height: 100vh;
+  width: 100%;
+  background-image: url("/static/images/hero-bg.jpg");
+  /* background: linear-gradient(to top, #4295bd , #c8dce5); */
+  background-position: center;
+  background-size: cover;
+}
+
+h1{
+  margin: 40px;
+  margin-left: 8%;
+
+}
+
+#job-results{
+  margin-left: 6%;
+}
+
+.job{
+  display: flex;
+  padding: 16px;
+  border: 1px solid rgb(212, 212, 212);
+  border-radius: 10px;
+  margin: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+  /* Do not add blur as it is causing lag */
+  /* backdrop-filter: blur(17px); */
+  transition: opacity 0.5s ease-in-out;
+}
+
+.job:hover{
+  background-color: rgb(236, 236, 236);
+}
+
+.job-link, .job-link:visited {
+  float: left;
+  flex-grow: 1;
+  width: 90%;
+  text-decoration: none;
+  color: black;
+}
+
+/* ....................... Save Button */
+.save-button {
+  cursor: pointer;
+  border: none;
+  float: right;
+  border-radius: 50%;
+  height: 35px;
+  width: 35px;
+  padding: 0;
+  background: transparent;
+}
+
+.save-button:hover{
+  background-color: #c6c6c6;
+}
+
+/* .save-button:disabled{
+} */
+
+.save-button:disabled:hover{
+  cursor: default;
+  background: transparent;
+}
+
+.save-button svg {
+  height: 20px;
+  width: 20px;
+  margin: 0;
+}
+
+.save-button:active, .save-button svg:active {
+  animation: grow 0.75s ease;
+}
+@keyframes grow {
+  from {
+      transform: scale(1);
+  }
+  to {
+      transform: scale(0.5);
+  }
+}
+
+.jobTitle:hover{
+  text-decoration: underline;
+}
+
+.company_location{
+  display: flex;
+  flex-direction: column;
+}
+
+
+/*................. Loading screen */
+.loader{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  /* transition: opacity 0.75s, visibility 0.75s; */
+}
+
+.loader-hidden{
+  opacity: 0;
+  visibility: hidden;
+}
+
+.loader::after{
+  content: "";
+  width: 50px;
+  height: 50px;
+  border: 12px solid #dddddd;
+  border-top-color: #7449f5;
+  border-radius: 50%;
+  animation: loading 0.75s ease infinite;
+}
+
+@keyframes loading{
+  from{
+    transform: rotate(0turn);
+  }
+  to{
+    transform: rotate(1turn);
+  }
+}
