@@ -67,7 +67,7 @@ io.on('connection', socket =>{
     // Send data back to frontend from here
     const { jobTitle, location } = data;
 
-    
+    // this is working
     const example = async () => {
       // let driver = await new Builder().forBrowser(Browser.CHROME).build()
       let driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build()
@@ -79,6 +79,7 @@ io.on('connection', socket =>{
         const hth = await driver.findElement(By.css("h3"));
         const text = await hth.getText();
         console.log("Text: ", text);
+        socket.emit('job_results', text)
         
       } finally {
         await driver.quit()
