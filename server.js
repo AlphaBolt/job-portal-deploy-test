@@ -16,12 +16,11 @@ app.use('/static', express.static('static'))
 const { Builder, Browser, By, Key, until } = require('selenium-webdriver')
 const Chrome = require('selenium-webdriver/chrome');
 const options = new Chrome.Options();
-options.addArguments('--headless=new')
-options.addArguments('--disable-gpu')
-options.addArguments("--disable-images")
-options.addArguments("--incognito")
+// options.addArguments('--headless=new')
+// options.addArguments('--disable-gpu')
+// options.addArguments("--disable-images")
+// options.addArguments("--incognito")
 // options.addArguments('--user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"')
-options.addArguments('--user-agent="Chrome/88.0.4324.150"')
 
 
 //  Handling Routes .....................................................
@@ -95,6 +94,8 @@ io.on('connection', socket =>{
     // const scrapeJobs = async (website, jobSearchbarTag, locationSearchbarTag, cardTag, jobtitleTag) => {
       let driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build()
       await driver.get(website)
+      
+      await driver.manage().window().maximize()
 
       await driver.wait(until.elementLocated(By.id(locationSearchbarTag)), 3000)
       
