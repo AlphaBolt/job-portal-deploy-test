@@ -20,8 +20,8 @@ options.addArguments('--headless=new')
 options.addArguments('--disable-gpu')
 options.addArguments("--disable-images")
 options.addArguments("--incognito")
-options.addArguments('--user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"')
-
+// options.addArguments('--user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"')
+options.addArguments('--user-agent="Chrome/88.0.4324.150"')
 
 
 //  Handling Routes .....................................................
