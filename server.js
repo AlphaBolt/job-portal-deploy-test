@@ -16,7 +16,8 @@ app.use('/static', express.static('static'))
 const { Builder, Browser, By, Key, until } = require('selenium-webdriver')
 const Chrome = require('selenium-webdriver/chrome');
 const options = new Chrome.Options();
-// options.addArguments('--headless=new')
+options.addArguments('--headless')
+options.addArguments('--start-maximized')
 // options.addArguments('--disable-gpu')
 // options.addArguments("--disable-images")
 // options.addArguments("--incognito")
@@ -95,7 +96,7 @@ io.on('connection', socket =>{
       let driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build()
       await driver.get(website)
       
-      await driver.manage().window().maximize()
+      // await driver.manage().window().maximize()
 
       await driver.wait(until.elementLocated(By.id(locationSearchbarTag)), 3000)
       
