@@ -16,10 +16,10 @@ app.use('/static', express.static('static'))
 const { Builder, Browser, By, Key, until } = require('selenium-webdriver')
 const chrome = require('selenium-webdriver/chrome');
 const options = new chrome.Options();
-// options.addArguments('--headless')
-options.addArguments('--disable-gpu')
-options.addArguments("--disable-images")
-options.addArguments("--incognito")
+// options.addArguments('--headless=new')
+// options.addArguments('--disable-gpu')
+// options.addArguments("--disable-images")
+// options.addArguments("--incognito")
 
 
 
@@ -75,7 +75,7 @@ io.on('connection', socket =>{
     //   let driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build()
     //   try {
     //     await driver.get('https://www.google.com/')
-    //     await driver.findElement(By.name('q')).sendKeys(jobTitle, Key.RETURN)
+    //     await driver.findElement(By.name('q')).sendKeys(`${jobTitle} ${location}`, Key.RETURN)
     //     // await driver.wait(until.titleIs('webdriver - Google Search'), 1000)
     //     const hth = await driver.findElement(By.css("h3"));
     //     const text = await hth.getText();
@@ -89,13 +89,10 @@ io.on('connection', socket =>{
     
     // example()
 
-    // let indeedStatus = 1
-    // let glassdoorStatus = 1
 
     // Async function for scraping job
-    const scrapeJobs = async (website, jobSearchbarTag, locationSearchbarTag, cardTag, jobtitleTag, 
-      joblinkTag, locationTag, companyTag, descriptionTag, jobPostedTag, salaryTag) => {
-    // const scrapeJobs = async (website, jobSearchbarTag, locationSearchbarTag, cardTag) => {
+    const scrapeJobs = async (website, jobSearchbarTag, locationSearchbarTag, cardTag, jobtitleTag, joblinkTag, locationTag, companyTag, descriptionTag, jobPostedTag, salaryTag) => {
+    // const scrapeJobs = async (website, jobSearchbarTag, locationSearchbarTag, cardTag, jobtitleTag) => {
       let driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build()
       await driver.get(website)
 
@@ -108,22 +105,22 @@ io.on('connection', socket =>{
       await jobSearchbar.sendKeys(jobTitle, Key.RETURN)
 
       let results = await driver.findElements(By.className(cardTag))
-
+      
       // As results is a HTML collections (not an array), so we need to convert it to JS array
-      Array.from(results)
+      // Array.from(results)
 
       if(results.length > 0){
 
         // Looping through results
-        results.forEach(async (result) => {
-          console.log(result)
-
-          let job_title = await result.findElement(By.className(jobtitleTag)).getText()
-          let job_link = await result.findElement(By.className(joblinkTag)).getAttribute("href")
-          let job_location = await result.findElement(By.className(locationTag)).getText()
-          let company_name = await result.findElement(By.className(companyTag)).getText()
-          let description = await result.findElement(By.className(descriptionTag)).getText()
-          let job_posted = await result.findElement(By.className(jobPostedTag)).getText()
+        for(let i = 0; i < results.length; i++){
+          // console.log(results[i])
+          
+          let job_title = await results[i].findElement(By.className(jobtitleTag)).getText()
+          let job_link = await results[i].findElement(By.className(joblinkTag)).getAttribute("href")
+          let job_location = await results[i].findElement(By.className(locationTag)).getText()
+          let company_name = await results[i].findElement(By.className(companyTag)).getText()
+          let description = await results[i].findElement(By.className(descriptionTag)).getText()
+          let job_posted = await results[i].findElement(By.className(jobPostedTag)).getText()
           
           let job_salary
           console.log(job_title, job_link, job_location, company_name, description, job_posted)
@@ -148,19 +145,21 @@ io.on('connection', socket =>{
           })
 
 
-        })
+        }
 
       }
-      // await driver.quit()
+
+      await driver.quit()
   
 
 
     }
 
 
-    // Write function call for scrapeJobs
-    // 1. Indeed
-    // scrapeJobs('https://in.indeed.com/', 'text-input-what', 'text-input-where', 'job_seen_beacon')
+    // // Write function call for scrapeJobs
+    // // 1. Indeed
+    // scrapeJobs('https://in.indeed.com/', 'text-input-what', 'text-input-where', 'job_seen_beacon', 'jobTitle')
+
     scrapeJobs('https://in.indeed.com/', 'text-input-what', 'text-input-where', 'job_seen_beacon', 'jobTitle', 'jcs-JobTitle', 'css-1p0sjhy', 'css-92r8pb', 'css-9446fg', 'css-qvloho', 'salary-snippet-container')
 
     // 2. Glassdoor
@@ -182,6 +181,6 @@ io.on('connection', socket =>{
 
 
 const port = process.env.PORT || 3000
-server.listen(3000, () => {
-    console.log(`App listening on port http://localhost:${3000}`)
+server.listen(port, () => {
+    console.log(`App listening on port http://localhost:${port}`)
   })
