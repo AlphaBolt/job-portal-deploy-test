@@ -14,13 +14,13 @@ app.use('/static', express.static('static'))
 
  // Selenium
 const { Builder, Browser, By, Key, until } = require('selenium-webdriver')
-const chrome = require('selenium-webdriver/chrome');
-const options = new chrome.Options();
-// options.addArguments('--headless=new')
-// options.addArguments('--disable-gpu')
-// options.addArguments("--disable-images")
-// options.addArguments("--incognito")
-
+const Chrome = require('selenium-webdriver/chrome');
+const options = new Chrome.Options();
+options.addArguments('--headless=new')
+options.addArguments('--disable-gpu')
+options.addArguments("--disable-images")
+options.addArguments("--incognito")
+options.addArguments('--user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"')
 
 
 
@@ -96,6 +96,8 @@ io.on('connection', socket =>{
       let driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build()
       await driver.get(website)
 
+      // await driver.wait(until.elementLocated(By.id(locationSearchbarTag)), 5000)
+      
       let locationSearchBar = await driver.findElement(By.id(locationSearchbarTag))
       locationSearchBar.clear()
       locationSearchBar.sendKeys(location)
@@ -158,9 +160,9 @@ io.on('connection', socket =>{
 
     // // Write function call for scrapeJobs
     // // 1. Indeed
+    scrapeJobs('https://in.indeed.com/', 'text-input-what', 'text-input-where', 'job_seen_beacon', 'jobTitle', 'jcs-JobTitle', 'css-1p0sjhy', 'css-92r8pb', 'css-9446fg', 'css-qvloho', 'salary-snippet-container')
     // scrapeJobs('https://in.indeed.com/', 'text-input-what', 'text-input-where', 'job_seen_beacon', 'jobTitle')
 
-    scrapeJobs('https://in.indeed.com/', 'text-input-what', 'text-input-where', 'job_seen_beacon', 'jobTitle', 'jcs-JobTitle', 'css-1p0sjhy', 'css-92r8pb', 'css-9446fg', 'css-qvloho', 'salary-snippet-container')
 
     // 2. Glassdoor
     // scrapeJobs('https://www.glassdoor.co.in/Job/index.htm', "searchBar-jobTitle", "searchBar-location", "jobCard", 
