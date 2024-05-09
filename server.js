@@ -96,7 +96,7 @@ io.on('connection', socket =>{
       let driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build()
       await driver.get(website)
 
-      // await driver.wait(until.elementLocated(By.id(locationSearchbarTag)), 5000)
+      await driver.wait(until.elementLocated(By.id(locationSearchbarTag)), 3000)
       
       let locationSearchBar = await driver.findElement(By.id(locationSearchbarTag))
       locationSearchBar.clear()
