@@ -14,14 +14,17 @@ app.use('/static', express.static('static'))
 
  // Selenium
 const { Builder, Browser, By, Key, until } = require('selenium-webdriver')
-const Chrome = require('selenium-webdriver/chrome');
-const options = new Chrome.Options();
-options.addArguments('--headless')
-options.addArguments('--start-maximized')
+const chrome = require('selenium-webdriver/chrome');
+const options = new chrome.Options();
+// options.addArguments('--headless')
 // options.addArguments('--disable-gpu')
 // options.addArguments("--disable-images")
 // options.addArguments("--incognito")
 // options.addArguments('--user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"')
+const webdriver = require('selenium-webdriver')
+const chromeCapabilities = webdriver.Capabilities.chrome();
+chromeCapabilities.set('chromeOptions', {args: ['--headless']});
+
 
 
 //  Handling Routes .....................................................
@@ -93,12 +96,12 @@ io.on('connection', socket =>{
     // Async function for scraping job
     const scrapeJobs = async (website, jobSearchbarTag, locationSearchbarTag, cardTag, jobtitleTag, joblinkTag, locationTag, companyTag, descriptionTag, jobPostedTag, salaryTag) => {
     // const scrapeJobs = async (website, jobSearchbarTag, locationSearchbarTag, cardTag, jobtitleTag) => {
-      let driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build()
+      // let driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build()
+      let driver = new webdriver.Builder().forBrowser('chrome').withCapabilities(chromeCapabilities).build();
+
       await driver.get(website)
       
-      // await driver.manage().window().maximize()
-
-      await driver.wait(until.elementLocated(By.id(locationSearchbarTag)), 3000)
+      // await driver.wait(until.elementLocated(By.id(locationSearchbarTag)), 3000)
       
       let locationSearchBar = await driver.findElement(By.id(locationSearchbarTag))
       locationSearchBar.clear()
@@ -109,9 +112,6 @@ io.on('connection', socket =>{
       await jobSearchbar.sendKeys(jobTitle, Key.RETURN)
 
       let results = await driver.findElements(By.className(cardTag))
-      
-      // As results is a HTML collections (not an array), so we need to convert it to JS array
-      // Array.from(results)
 
       if(results.length > 0){
 
