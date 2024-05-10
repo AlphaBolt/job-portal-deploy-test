@@ -16,7 +16,7 @@ app.use('/static', express.static('static'))
 const { Builder, Browser, By, Key, until } = require('selenium-webdriver')
 const chrome = require('selenium-webdriver/chrome');
 const options = new chrome.Options();
-options.addArguments('--headless')
+// options.addArguments('--headless')
 // options.addArguments('--disable-gpu')
 // options.addArguments("--disable-images")
 // options.addArguments("--incognito")
@@ -71,7 +71,7 @@ io.on('connection', socket =>{
 
     // Send data back to frontend from here
     const { jobTitle, location, userAgent } = data;
-    options.addArguments(`--user-agent="${userAgent}"`)
+    // options.addArguments(`--user-agent="${userAgent}"`)
 
     // this is working
     // const example = async () => {
