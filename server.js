@@ -21,9 +21,6 @@ const options = new chrome.Options();
 // options.addArguments("--disable-images")
 // options.addArguments("--incognito")
 // options.addArguments('--user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"')
-const webdriver = require('selenium-webdriver')
-const chromeCapabilities = webdriver.Capabilities.chrome();
-chromeCapabilities.set('chromeOptions', {args: ['--headless']});
 
 
 
@@ -96,8 +93,7 @@ io.on('connection', socket =>{
     // Async function for scraping job
     const scrapeJobs = async (website, jobSearchbarTag, locationSearchbarTag, cardTag, jobtitleTag, joblinkTag, locationTag, companyTag, descriptionTag, jobPostedTag, salaryTag) => {
     // const scrapeJobs = async (website, jobSearchbarTag, locationSearchbarTag, cardTag, jobtitleTag) => {
-      // let driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build()
-      let driver = new webdriver.Builder().forBrowser('chrome').withCapabilities(chromeCapabilities).build();
+      let driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build()
 
       await driver.get(website)
       
