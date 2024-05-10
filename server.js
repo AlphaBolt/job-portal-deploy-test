@@ -21,8 +21,6 @@ const options = new chrome.Options();
 // options.addArguments("--disable-images")
 // options.addArguments("--incognito")
 // options.addArguments('--user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"')
-// const userAgent = window.navigator.userAgent
-// options.addArguments(`--user-agent="${userAgent}"`)
 
 
 
@@ -67,11 +65,9 @@ app.get('/signout', function (req, res) {
 io.on('connection', socket =>{
 
   socket.on('job_search', data => {
-    // console.log(data)
 
     // Send data back to frontend from here
-    const { jobTitle, location, userAgent } = data;
-    // options.addArguments(`--user-agent="${userAgent}"`)
+    const { jobTitle, location } = data;
 
     // this is working
     // const example = async () => {
@@ -96,8 +92,9 @@ io.on('connection', socket =>{
     // Async function for scraping job
     const scrapeJobs = async (website, jobSearchbarTag, locationSearchbarTag, cardTag, jobtitleTag, joblinkTag, locationTag, companyTag, descriptionTag, jobPostedTag, salaryTag) => {
     // const scrapeJobs = async (website, jobSearchbarTag, locationSearchbarTag, cardTag, jobtitleTag) => {
-      let driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build()
-
+      // let driver = await new Builder().forBrowser(Browser.CHROME).setChromeOptions(options).build()
+      let driver = await new Builder().forBrowser(Browser.CHROME).build()
+      
       await driver.get(website)
       
       // await driver.wait(until.elementLocated(By.id(locationSearchbarTag)), 3000)
@@ -116,7 +113,6 @@ io.on('connection', socket =>{
 
         // Looping through results
         for(let i = 0; i < results.length; i++){
-          // console.log(results[i])
           
           let job_title = await results[i].findElement(By.className(jobtitleTag)).getText()
           let job_link = await results[i].findElement(By.className(joblinkTag)).getAttribute("href")
@@ -126,7 +122,7 @@ io.on('connection', socket =>{
           let job_posted = await results[i].findElement(By.className(jobPostedTag)).getText()
           
           let job_salary
-          console.log(job_title, job_link, job_location, company_name, description, job_posted)
+          // console.log(job_title, job_link, job_location, company_name, description, job_posted)
           
           try{
             job_salary = await result.findElement(By.className(salaryTag))

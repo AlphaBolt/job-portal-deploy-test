@@ -85,10 +85,9 @@ document.getElementById("searchForm").addEventListener("submit", function(event)
 
   const jobTitle = document.getElementById("title").value;
   const location = document.getElementById("location").value;
-  const userAgent = window.navigator.userAgent
 
   // Emit data to server-side with SocketIO
-  socket.emit('job_search', { jobTitle, location, userAgent });
+  socket.emit('job_search', { jobTitle, location });
 });
 
 
