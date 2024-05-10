@@ -16,11 +16,13 @@ app.use('/static', express.static('static'))
 const { Builder, Browser, By, Key, until } = require('selenium-webdriver')
 const chrome = require('selenium-webdriver/chrome');
 const options = new chrome.Options();
-// options.addArguments('--headless')
+options.addArguments('--headless')
 // options.addArguments('--disable-gpu')
 // options.addArguments("--disable-images")
 // options.addArguments("--incognito")
 // options.addArguments('--user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"')
+// const userAgent = window.navigator.userAgent
+// options.addArguments(`--user-agent="${userAgent}"`)
 
 
 
@@ -68,7 +70,8 @@ io.on('connection', socket =>{
     // console.log(data)
 
     // Send data back to frontend from here
-    const { jobTitle, location } = data;
+    const { jobTitle, location, userAgent } = data;
+    options.addArguments(`--user-agent="${userAgent}"`)
 
     // this is working
     // const example = async () => {
